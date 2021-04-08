@@ -58,7 +58,8 @@ class Record:
 class CaloriesCalculator(Calculator):
     '''Класс подсчета каллорий.'''
 
-    def get_remained(self) -> float:
+    def get_calories_remained(self) -> float:
         '''Определяет, не превышен ли лимит.'''
+
     
 
