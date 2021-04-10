@@ -12,10 +12,8 @@ class Calculator:
 
     def add_record(self, record: Record) -> None:
         '''Добавляет новую запись в список.'''
-        # переменная хранит одну запись в виде списка
-        list_record: List = [record.amount, record.comment, record.date]
         # добавляю запись в список
-        self.records.append(list_record)
+        self.records.append(record)
 
     def get_today_stats(self) -> float:
         '''Возвращает количество за сегодня.'''
@@ -23,8 +21,8 @@ class Calculator:
         self.count_today: float = 0
         # из списка берем отдельные записи
         for i in self.records:
-            if i[2] == dt.datetime.now().date():
-                self.count_today += i[0]
+            if i.date == dt.datetime.now().date():
+                self.count_today += i.amount
         return self.count_today
 
     def get_week_stats(self) -> float:
@@ -33,8 +31,8 @@ class Calculator:
         # количество дней недели
         week: dt.timedelta = dt.timedelta(days=7)
         for i in self.records:
-            if i[2] >= (dt.datetime.now().date() - week):
-                self.count_week += i[0]
+            if i.date >= (dt.datetime.now().date() - week):
+                self.count_week += i.amount
         return self.count_week
 
 
@@ -61,8 +59,8 @@ class CaloriesCalculator(Calculator):
         self.diff_value: float = 0
         self.out_str: str = ''
         for i in self.records:
-            if i[2] == dt.datetime.now().date():
-                self.total_value += i[0]
+            if i.date == dt.datetime.now().date():
+                self.total_value += i.amount
         # определяем оставшееся количество
         self.diff_value = self.limit - self.total_value
         if self.diff_value > 0:
@@ -94,8 +92,8 @@ class CashCalculator(Calculator):
         self.out_str: str = ''
         # сколько потрачено за сегодня
         for i in self.records:
-            if i[2] == dt.datetime.now().date():
-                self.total_value += i[0]
+            if i.date == dt.datetime.now().date():
+                self.total_value += i.amount
         # определяем оставшееся количество
         # в зависимости от валюты
         if self.currency == self.cur[0]:
@@ -117,7 +115,9 @@ class CashCalculator(Calculator):
                             f'{abs(self.diff_value):.2f} {self.cur_dict[self.currency]}')
         return self.out_str
 
-cash = CashCalculator(3000)
-cash.add_record(Record(400, 'sdf'))
-print(cash.get_today_cash_remained('usd'))
-print(cash.records)
+cash2 = CashCalculator(2500)
+cash2.add_record(Record(1050, 'sdf'))
+cash2.add_record(Record(1950, 'sdf'))
+
+print(cash2.get_week_stats())
+print(cash2.records)
