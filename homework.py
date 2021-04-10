@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Union, List
+from typing import Union, List, Dict
 import datetime as dt
 
 
@@ -84,6 +84,8 @@ class CashCalculator(Calculator):
         self.currency = currency
         # принимаемые валюты в виде списка и курсы
         self.cur: List = ['rub', 'usd', 'eur']
+        # список для вывода валюты
+        self.cur_dict: Dict = {'rub': 'руб', 'usd': 'USD', 'eur': 'Euro'}
         # если валюты нет в списке возвращаем None
         if self.currency not in self.cur:
             return None
@@ -107,10 +109,14 @@ class CashCalculator(Calculator):
         # выводим запись о количестве
         if self.diff_value > 0:
             self.out_str = (f'На сегодня осталось '
-                            f'{self.diff_value} {self.currency}')
+                            f'{self.diff_value:.2f} {self.cur_dict[self.currency]}')
         elif self.diff_value == 0:
             self.out_str = 'Денег нет, держись'
         elif self.diff_value < 0:
             self.out_str = (f'Денег нет, держись: твой долг - '
-                            f'{abs(self.diff_value)} {self.currency}')
+                            f'{abs(self.diff_value):.2f} {self.cur_dict[self.currency]}')
         return self.out_str
+
+#cash = CashCalculator(3000)
+#cash.add_record(Record(400, 'sdf', '10.04.2021'))
+#print(cash.get_today_cash_remained('usd'))
