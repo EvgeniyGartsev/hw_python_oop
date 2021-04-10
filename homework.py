@@ -21,9 +21,9 @@ class Calculator:
         '''Возвращает количество за сегодня.'''
 
         self.count_today: float = 0
-        # из списка берем отдельные записи в виде списка
+        # из списка берем отдельные записи
         for i in self.records:
-            if i[2].date() == dt.datetime.now().date():
+            if i[2] == dt.datetime.now().date():
                 self.count_today += i[0]
         return self.count_today
 
@@ -33,7 +33,7 @@ class Calculator:
         # количество дней недели
         week: dt.timedelta = dt.timedelta(days=7)
         for i in self.records:
-            if i[2].date() >= (dt.datetime.now().date() - week):
+            if i[2] >= (dt.datetime.now().date() - week):
                 self.count_week += i[0]
         return self.count_week
 
@@ -49,7 +49,7 @@ class Record:
         if type(date) == dt.datetime:
             self.date = date.date()
         else:
-            self.date = dt.datetime.strptime(date, date_format)
+            self.date = dt.datetime.strptime(date, date_format).date()
 
 
 class CaloriesCalculator(Calculator):
@@ -61,7 +61,7 @@ class CaloriesCalculator(Calculator):
         self.diff_value: float = 0
         self.out_str: str = ''
         for i in self.records:
-            if dt.datetime.now().date() == i[2].date():
+            if i[2] == dt.datetime.now().date():
                 self.total_value += i[0]
         # определяем оставшееся количество
         self.diff_value = self.limit - self.total_value
@@ -94,7 +94,7 @@ class CashCalculator(Calculator):
         self.out_str: str = ''
         # сколько потрачено за сегодня
         for i in self.records:
-            if i[2].date() == dt.datetime.now().date():
+            if i[2] == dt.datetime.now().date():
                 self.total_value += i[0]
         # определяем оставшееся количество
         # в зависимости от валюты
@@ -117,6 +117,7 @@ class CashCalculator(Calculator):
                             f'{abs(self.diff_value):.2f} {self.cur_dict[self.currency]}')
         return self.out_str
 
-#cash = CashCalculator(3000)
-#cash.add_record(Record(400, 'sdf', '10.04.2021'))
-#print(cash.get_today_cash_remained('usd'))
+cash = CashCalculator(3000)
+cash.add_record(Record(400, 'sdf'))
+print(cash.get_today_cash_remained('usd'))
+print(cash.records)
