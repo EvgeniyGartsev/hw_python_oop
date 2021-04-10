@@ -58,7 +58,7 @@ class CaloriesCalculator(Calculator):
         self.total_value: float = 0
         self.diff_value: float = 0
         for i in self.records:
-            if dt.datetime.now().date == i[2].date:
+            if dt.datetime.now().date() == i[2].date():
                 self.total_value += i[0]     
         # определяем оставшееся количество
         self.diff_value = self.limit - self.total_value
@@ -110,7 +110,7 @@ class CashCalculator(Calculator):
                            f'{abs(self.diff_value)} {self.currency}')
         return self.out_str
 
-
+##############################################проверка##########################################
 
 calc = CashCalculator(2000)
 r = Record(230, 'на велосипед', '08.04.2021')
@@ -120,18 +120,18 @@ calc.add_record(Record(133, 'на пулемет', '09.04.2021'))
 calc.add_record(Record(10, 'на трусики', '02.04.2021'))
 calc.add_record(Record(133, 'на карты', '01.04.2021'))
 
-print(calc.get_week_stats())
-print(230+400+133+10)
+#print(calc.get_week_stats())
+#print(230+400+133+10)
 
-print(calc.get_today_cash_remained('rub'))
+#print(calc.get_today_cash_remained('rub'))
 calc.add_record(Record(500, 'на авто', '10.04.2021'))
 calc.add_record(Record(200, 'на дом', '10.04.2021'))
 calc.add_record(Record(1300, 'на отпуск', '10.04.2021'))
 calc.add_record(Record(1, 'на сигу', '10.04.2021'))
 
-print(calc.get_today_cash_remained('rub'))
-print(calc.get_today_cash_remained('eur'))
-print(calc.get_today_cash_remained('usd'))
+#print(calc.get_today_cash_remained('rub'))
+#print(calc.get_today_cash_remained('eur'))
+#print(calc.get_today_cash_remained('usd'))
 
 #print(f'self.date = {r.date.date()}')
 #print(f'Now = {dt.datetime.now().date()}')
@@ -141,3 +141,18 @@ print(calc.get_today_cash_remained('usd'))
 #week = dt.timedelta(days=7)
 #w = dt.datetime.now().date() - week
 #print(dt.datetime.now().date() > w)
+
+
+# проверяю калькулятор каллорий
+kall = CaloriesCalculator(3000)
+kall.add_record(Record(200, 'Печеньки', '02.04.2021'))
+kall.add_record(Record(300, 'Тортик', '03.04.2021'))
+kall.add_record(Record(100, 'Мяско', '04.04.2021'))
+kall.add_record(Record(600, 'Рыбка', '10.04.2021'))
+kall.add_record(Record(400, 'Чизкейк', '10.04.2021'))
+kall.add_record(Record(333, 'Чизкейк', '10.04.2021'))
+kall.add_record(Record(1800, 'Чизкейк', '10.04.2021'))
+
+print(kall.get_today_stats())
+print(kall.get_week_stats())
+print(kall.get_calories_remained())
