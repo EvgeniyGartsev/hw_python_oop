@@ -8,7 +8,7 @@ class Calculator:
 
     def __init__(self, limit: float) -> None:
         self.limit: float = limit
-        self.records: List = []
+        self.records: List[Record] = []
 
     def add_record(self, record: Record) -> None:
         '''Добавляет новую запись в список.'''
@@ -31,7 +31,8 @@ class Calculator:
         # количество дней недели
         week: dt.timedelta = dt.timedelta(days=7)
         for i in self.records:
-            if dt.datetime.now().date() >= i.date >= (dt.datetime.now().date() - week):
+            if (dt.datetime.now().date() >= i.date
+               >= (dt.datetime.now().date() - week)):
                 self.count_week += i.amount
         return self.count_week
 
@@ -107,29 +108,12 @@ class CashCalculator(Calculator):
         # выводим запись о количестве
         if self.diff_value > 0:
             self.out_str = (f'На сегодня осталось '
-                            f'{self.diff_value:.2f} {self.cur_dict[self.currency]}')
+                            f'{self.diff_value:.2f}'
+                            f'{self.cur_dict[self.currency]}')
         elif self.diff_value == 0:
             self.out_str = 'Денег нет, держись'
         elif self.diff_value < 0:
             self.out_str = (f'Денег нет, держись: твой долг - '
-                            f'{abs(self.diff_value):.2f} {self.cur_dict[self.currency]}')
+                            f'{abs(self.diff_value):.2f}'
+                            f'{self.cur_dict[self.currency]}')
         return self.out_str
-
-kall = CaloriesCalculator(3000)
-kall.add_record(Record(500, 'fdg', '10.04.2021'))
-kall.add_record(Record(500, 'fdg', '09.04.2021'))
-kall.add_record(Record(500, 'fdg', '08.04.2021'))
-kall.add_record(Record(500, 'fdg', '07.04.2021'))
-kall.add_record(Record(500, 'fdg', '06.04.2021'))
-kall.add_record(Record(500, 'fdg', '05.04.2021'))
-kall.add_record(Record(500, 'fdg', '04.04.2021'))
-kall.add_record(Record(500, 'fdg', '03.04.2021'))
-kall.add_record(Record(500, 'fdg', '02.04.2021'))
-kall.add_record(Record(500, 'fdg', '01.04.2021'))
-kall.add_record(Record(500, 'fdg', '11.04.2021'))
-kall.add_record(Record(500, 'fdg', '12.04.2021'))
-
-print(kall.get_week_stats())
-
-week: dt.timedelta = dt.timedelta(days=6)
-print(dt.datetime.now().date() - week)
