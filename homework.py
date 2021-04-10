@@ -31,7 +31,7 @@ class Calculator:
         # количество дней недели
         week: dt.timedelta = dt.timedelta(days=7)
         for i in self.records:
-            if i.date >= (dt.datetime.now().date() - week):
+            if dt.datetime.now().date() >= i.date >= (dt.datetime.now().date() - week):
                 self.count_week += i.amount
         return self.count_week
 
@@ -115,9 +115,21 @@ class CashCalculator(Calculator):
                             f'{abs(self.diff_value):.2f} {self.cur_dict[self.currency]}')
         return self.out_str
 
-cash2 = CashCalculator(2500)
-cash2.add_record(Record(1050, 'sdf'))
-cash2.add_record(Record(1950, 'sdf'))
+kall = CaloriesCalculator(3000)
+kall.add_record(Record(500, 'fdg', '10.04.2021'))
+kall.add_record(Record(500, 'fdg', '09.04.2021'))
+kall.add_record(Record(500, 'fdg', '08.04.2021'))
+kall.add_record(Record(500, 'fdg', '07.04.2021'))
+kall.add_record(Record(500, 'fdg', '06.04.2021'))
+kall.add_record(Record(500, 'fdg', '05.04.2021'))
+kall.add_record(Record(500, 'fdg', '04.04.2021'))
+kall.add_record(Record(500, 'fdg', '03.04.2021'))
+kall.add_record(Record(500, 'fdg', '02.04.2021'))
+kall.add_record(Record(500, 'fdg', '01.04.2021'))
+kall.add_record(Record(500, 'fdg', '11.04.2021'))
+kall.add_record(Record(500, 'fdg', '12.04.2021'))
 
-print(cash2.get_week_stats())
-print(cash2.records)
+print(kall.get_week_stats())
+
+week: dt.timedelta = dt.timedelta(days=6)
+print(dt.datetime.now().date() - week)
