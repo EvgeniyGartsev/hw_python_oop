@@ -108,12 +108,12 @@ class CashCalculator(Calculator):
         # выводим запись о количестве
         if self.diff_value > 0:
             self.out_str = (f'На сегодня осталось '
-                            f'{self.diff_value:.2f}'
+                            f'{self.diff_value:.2f} '
                             f'{self.cur_dict[self.currency]}')
         elif self.diff_value == 0:
             self.out_str = 'Денег нет, держись'
         elif self.diff_value < 0:
             self.out_str = (f'Денег нет, держись: твой долг - '
-                            f'{abs(self.diff_value):.2f}'
+                            f'{abs(self.diff_value):.2f} '
                             f'{self.cur_dict[self.currency]}')
         return self.out_str
