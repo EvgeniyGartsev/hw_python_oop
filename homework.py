@@ -68,20 +68,20 @@ class CashCalculator(Calculator):
     RUB_RATE: float = 1.0
     USD_RATE: float = 77.0
     EURO_RATE: float = 91.7
-    # в словаре храним валюты, курс и способ вывода
-    currency_dict: Dict[str, Tuple[float, str]]
-    currency_dict = {'rub': (RUB_RATE, 'руб'),
-                     'usd': (USD_RATE, 'USD'),
-                     'eur': (EURO_RATE, 'Euro')}
 
     def get_today_cash_remained(self, currency: str):
         '''Определяет, сколько еще можно потратить.'''
+        # в словаре храним валюты, курс и способ вывода
+        currency_dict: Dict[str, Tuple[float, str]]
+        currency_dict = {'rub': (self.RUB_RATE, 'руб'),
+                         'usd': (self.USD_RATE, 'USD'),
+                         'eur': (self.EURO_RATE, 'Euro')}
         currency_priv = currency.lower()
-        # распаковываем курс и способ вывода
-        cur_rate, cur_str = self.currency_dict[currency_priv]
         # если валюты нет в списке возвращаем None
-        if currency_priv not in self.currency_dict.keys():
+        if currency_priv not in currency_dict.keys():
             return None
+        # распаковываем курс и способ вывода
+        cur_rate, cur_str = currency_dict[currency_priv]
         total_value: float = self.get_today_stats()
         diff_value: float = 0
         # определяем оставшееся количество
