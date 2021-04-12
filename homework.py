@@ -56,21 +56,19 @@ class CaloriesCalculator(Calculator):
 
     def get_calories_remained(self) -> float:
         '''Определяет, сколько еще можно съесть.'''
-        self.total_value: float = 0
-        self.diff_value: float = 0
-        self.out_str: str = ''
-        for i in self.records:
-            if i.date == dt.datetime.now().date():
-                self.total_value += i.amount
+        total_value: float = self.get_today_stats()
+        diff_value: float = 0
+        out_str: str = ''
+
         # определяем оставшееся количество
-        self.diff_value = self.limit - self.total_value
-        if self.diff_value > 0:
-            self.out_str = (f'Сегодня можно съесть что-нибудь ещё, '
-                            f'но с общей калорийностью не более '
-                            f'{self.diff_value} кКал')
+        diff_value = self.limit - total_value
+        if diff_value > 0:
+            out_str = (f'Сегодня можно съесть что-нибудь ещё, '
+                       f'но с общей калорийностью не более '
+                       f'{diff_value} кКал')
         else:
-            self.out_str = 'Хватит есть!'
-        return self.out_str
+            out_str = 'Хватит есть!'
+        return out_str
 
 
 class CashCalculator(Calculator):
@@ -80,7 +78,7 @@ class CashCalculator(Calculator):
 
     def get_today_cash_remained(self, currency: str):
         '''Определяет, сколько еще можно потратить.'''
-        self.currency = currency
+        self.currency = currency.lower()
         # принимаемые валюты в виде списка и курсы
         self.cur: List = ['rub', 'usd', 'eur']
         # список для вывода валюты
@@ -88,32 +86,43 @@ class CashCalculator(Calculator):
         # если валюты нет в списке возвращаем None
         if self.currency not in self.cur:
             return None
-        self.total_value: float = 0
-        self.diff_value: float = 0
-        self.out_str: str = ''
-        # сколько потрачено за сегодня
-        for i in self.records:
-            if i.date == dt.datetime.now().date():
-                self.total_value += i.amount
+        total_value: float = self.get_today_stats()
+        diff_value: float = 0
+        out_str: str = ''
         # определяем оставшееся количество
         # в зависимости от валюты
         if self.currency == self.cur[0]:
-            self.diff_value = self.limit - self.total_value
+            diff_value = self.limit - total_value
         elif self.currency == self.cur[1]:
-            self.diff_value = round(
-                (self.limit - self.total_value) / self.USD_RATE, 2)
+            diff_value = round(
+                (self.limit - total_value) / self.USD_RATE, 2)
         elif self.currency == self.cur[2]:
-            self.diff_value = round(
-                (self.limit - self.total_value) / self.EURO_RATE, 2)
+            diff_value = round(
+                (self.limit - total_value) / self.EURO_RATE, 2)
         # выводим запись о количестве
-        if self.diff_value > 0:
-            self.out_str = (f'На сегодня осталось '
-                            f'{self.diff_value:.2f} '
+        if diff_value > 0:
+            out_str = (f'На сегодня осталось '
+                            f'{diff_value:.2f} '
                             f'{self.cur_dict[self.currency]}')
-        elif self.diff_value == 0:
-            self.out_str = 'Денег нет, держись'
-        elif self.diff_value < 0:
-            self.out_str = (f'Денег нет, держись: твой долг - '
-                            f'{abs(self.diff_value):.2f} '
+        elif diff_value == 0:
+            out_str = 'Денег нет, держись'
+        elif diff_value < 0:
+            out_str = (f'Денег нет, держись: твой долг - '
+                            f'{abs(diff_value):.2f} '
                             f'{self.cur_dict[self.currency]}')
-        return self.out_str
+        return out_str
+
+
+kal = CaloriesCalculator(1000)
+kal.add_record(Record(500, 'sss', '12.04.2021'))
+kal.add_record(Record(200, 'sss', '12.04.2021'))
+kal.add_record(Record(100, 'sss', '12.04.2021'))
+
+print(kal.get_calories_remained())
+
+
+cash = CashCalculator(2000)
+cash.add_record(Record(300, 'fdd', '12.04.2021'))
+cash.add_record(Record(300, 'fdd', '12.04.2021'))
+cash.add_record(Record(300, 'fdd', '12.04.2021'))
+print(cash.get_today_cash_remained('uSd'))
