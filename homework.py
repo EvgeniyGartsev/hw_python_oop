@@ -17,12 +17,8 @@ class Calculator:
 
     def get_today_stats(self) -> float:
         '''Возвращает количество за сегодня.'''
-
-        self.count_today: float = 0
-        # из списка берем отдельные записи
-        for i in self.records:
-            if i.date == dt.datetime.now().date():
-                self.count_today += i.amount
+        self.count_today: float = sum([i.amount for i in self.records
+                                       if i.date == dt.datetime.now().date()])
         return self.count_today
 
     def get_week_stats(self) -> float:
@@ -125,4 +121,4 @@ cash = CashCalculator(2000)
 cash.add_record(Record(300, 'fdd', '12.04.2021'))
 cash.add_record(Record(300, 'fdd', '12.04.2021'))
 cash.add_record(Record(300, 'fdd', '12.04.2021'))
-print(cash.get_today_cash_remained('uSd'))
+print(cash.get_today_cash_remained('rub'))
