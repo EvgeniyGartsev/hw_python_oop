@@ -17,16 +17,24 @@ class Calculator:
 
     def get_today_stats(self) -> float:
         '''Возвращает количество за сегодня.'''
-        count_today: float = sum([i.amount for i in self.records
-                                  if i.date == dt.datetime.now().date()])
+        count_today: float = sum(i.amount for i in self.records
+                                 if i.date == dt.datetime.now().date())
         return count_today
+
+    def get_diff_today(self):
+        '''Возвращает оставшееся количество за сегодня'''
+        total_value: float = self.get_today_stats()
+        diff_value: float = 0
+        # определяем оставшееся количество
+        diff_value = self.limit - total_value
+        return diff_value
 
     def get_week_stats(self) -> float:
         '''Возвращает количество за неделю.'''
         week: dt.timedelta = dt.timedelta(days=7)
-        count_week: float = sum([i.amount for i in self.records
+        count_week: float = sum(i.amount for i in self.records
                                 if (dt.datetime.now().date() >= i.date
-                                 >= (dt.datetime.now().date() - week))])
+                                    >= (dt.datetime.now().date() - week)))
         return count_week
 
 
@@ -48,19 +56,16 @@ class CaloriesCalculator(Calculator):
 
     def get_calories_remained(self) -> float:
         '''Определяет, сколько еще можно съесть.'''
-        total_value: float = self.get_today_stats()
-        diff_value: float = 0
-        out_str: str = ''
-
+        diff_value = self.get_diff_today()
+        out_value: str = ''
         # определяем оставшееся количество
-        diff_value = self.limit - total_value
         if diff_value > 0:
-            out_str = (f'Сегодня можно съесть что-нибудь ещё, '
-                       f'но с общей калорийностью не более '
-                       f'{diff_value} кКал')
+            out_value = (f'Сегодня можно съесть что-нибудь ещё, '
+                         f'но с общей калорийностью не более '
+                         f'{diff_value} кКал')
         else:
-            out_str = 'Хватит есть!'
-        return out_str
+            out_value = 'Хватит есть!'
+        return out_value
 
 
 class CashCalculator(Calculator):
@@ -72,31 +77,29 @@ class CashCalculator(Calculator):
     def get_today_cash_remained(self, currency: str):
         '''Определяет, сколько еще можно потратить.'''
         # в словаре храним валюты, курс и способ вывода
-        currency_dict: Dict[str, Tuple[float, str]]
-        currency_dict = {'rub': (self.RUB_RATE, 'руб'),
-                         'usd': (self.USD_RATE, 'USD'),
-                         'eur': (self.EURO_RATE, 'Euro')}
+        cur_out: Dict[str, Tuple[float, str]]
+        cur_out = {'rub': (self.RUB_RATE, 'руб'),
+                   'usd': (self.USD_RATE, 'USD'),
+                   'eur': (self.EURO_RATE, 'Euro')}
         currency_priv = currency.lower()
         # если валюты нет в списке возвращаем None
-        if currency_priv not in currency_dict.keys():
+        if currency_priv not in cur_out.keys():
             return None
         # распаковываем курс и способ вывода
-        cur_rate, cur_str = currency_dict[currency_priv]
-        total_value: float = self.get_today_stats()
-        diff_value: float = 0
+        cur_rate, cur_str = cur_out[currency_priv]
         # определяем оставшееся количество
         # в зависимости от валюты
         diff_value = round(
-            (self.limit - total_value) / cur_rate, 2)
+            self.get_diff_today() / cur_rate, 2)
         # выводим запись о количестве
         if diff_value == 0:
-            out_str = 'Денег нет, держись'
+            out_value = 'Денег нет, держись'
         elif diff_value > 0:
-            out_str = (f'На сегодня осталось '
-                       f'{diff_value:.2f} '
-                       f'{cur_str}')
+            out_value = (f'На сегодня осталось '
+                         f'{diff_value:.2f} '
+                         f'{cur_str}')
         elif diff_value < 0:
-            out_str = (f'Денег нет, держись: твой долг - '
-                       f'{abs(diff_value):.2f} '
-                       f'{cur_str}')
-        return out_str
+            out_value = (f'Денег нет, держись: твой долг - '
+                         f'{abs(diff_value):.2f} '
+                         f'{cur_str}')
+        return out_value
